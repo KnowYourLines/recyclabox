@@ -19,13 +19,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# TODO - SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "-$+r!mektwlo))==4bsya=f(eq0a3s136sj563j43rm#omry7c"
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# TODO - SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# TODO - CHANGE THIS IF GOING TO PRODUCTION!!!!!!!!!!!!!!!!!!!!!
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -77,8 +78,12 @@ WSGI_APPLICATION = "server.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "db",
+        "PORT": 5432,
     }
 }
 
