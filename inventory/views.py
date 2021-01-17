@@ -26,16 +26,16 @@ class InventoryViewSet(
     @action(detail=True, methods=["patch"])
     def quantity(self, request, **kwargs):
         instance = self.get_object()
-        serializer = QueryParamSerializer(data=self.request.query_params)
-        serializer.is_valid(raise_exception=True)
+        query_params = QueryParamSerializer(data=self.request.query_params)
+        query_params.is_valid(raise_exception=True)
         existing = model_to_dict(instance)
-        serializer = self.get_serializer(
+        product = self.get_serializer(
             instance,
             data={
-                "quantity": existing["quantity"] + serializer.validated_data["change"]
+                "quantity": existing["quantity"] + query_params.validated_data["change"]
             },
             partial=True,
         )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.validated_data)
+        product.is_valid(raise_exception=True)
+        product.save()
+        return Response(product.validated_data)
