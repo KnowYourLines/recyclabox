@@ -7,4 +7,4 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     quantity = models.IntegerField()
     price = models.FloatField()
-    sku = models.CharField(max_length=255, unique=True)
+    sku = models.CharField(max_length=255, primary_key=True)
