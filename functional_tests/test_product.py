@@ -8,10 +8,10 @@ class ProductIntegrationTest(APISimpleTestCase):
 
     def test_register_a_product(self):
         new_product = {
-            "SKU": "2345",
-            "Name": "Apple iPhone 5",
-            "Qty": 5,
-            "Price": 59.99,
+            "sku": "2346",
+            "name": "Apple iPhone 5",
+            "quantity": 5,
+            "price": 59.99,
         }
-        response = self.client.create("/product/", new_product, format="json")
-        assert response.status_code == HTTPStatus.OK
+        response = self.client.post("/inventory/", new_product, format="json")
+        assert response.status_code == HTTPStatus.CREATED

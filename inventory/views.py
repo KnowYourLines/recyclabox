@@ -1,3 +1,12 @@
-from django.shortcuts import render
+from rest_framework import mixins, viewsets
 
-# Create your views here.
+from inventory.models import Product
+from inventory.serializers import ProductSerializer
+
+
+class InventoryViewSet(
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
