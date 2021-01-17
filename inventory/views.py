@@ -17,3 +17,7 @@ class InventoryViewSet(
     @action(detail=False, methods=["get"])
     def available(self, request):
         return Response(self.get_queryset().filter(quantity__gt=0).values())
+
+    @action(detail=False, methods=["get"])
+    def sold_out(self, request):
+        return Response(self.get_queryset().filter(quantity=0).values())

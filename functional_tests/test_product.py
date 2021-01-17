@@ -49,3 +49,16 @@ class ProductIntegrationTest(APISimpleTestCase):
             {"name": "world", "quantity": 5, "price": 59.99, "sku": "2346"},
             {"name": "world", "quantity": 5, "price": 59.99, "sku": "hello"},
         ]
+
+    def test_retrives_all_sold_out_products(self):
+        created_product = Product(sku="2346", name="world", quantity=5, price=59.99)
+        created_product.save()
+        created_product = Product(sku="hello", name="world", quantity=5, price=59.99)
+        created_product.save()
+        created_product = Product(sku="goodbye", name="world", quantity=0, price=59.99)
+        created_product.save()
+        response = self.client.get("/inventory/sold_out/")
+        assert response.status_code == HTTPStatus.OK
+        assert list(response.data) == [
+            {"name": "world", "quantity": 0, "price": 59.99, "sku": "goodbye"},
+        ]
