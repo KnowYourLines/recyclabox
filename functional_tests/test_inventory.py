@@ -45,7 +45,7 @@ class ProductIntegrationTest(APISimpleTestCase):
         created_product.save()
         response = self.client.get("/inventory/available/")
         assert response.status_code == HTTPStatus.OK
-        assert list(response.data) == [
+        assert response.data == [
             {"name": "world", "quantity": 5, "price": 59.99, "sku": "2346"},
             {"name": "world", "quantity": 5, "price": 59.99, "sku": "hello"},
         ]
@@ -59,7 +59,7 @@ class ProductIntegrationTest(APISimpleTestCase):
         created_product.save()
         response = self.client.get("/inventory/sold_out/")
         assert response.status_code == HTTPStatus.OK
-        assert list(response.data) == [
+        assert response.data == [
             {"name": "world", "quantity": 0, "price": 59.99, "sku": "goodbye"},
         ]
 

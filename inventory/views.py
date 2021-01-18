@@ -17,11 +17,15 @@ class InventoryViewSet(
 
     @action(detail=False, methods=["get"])
     def available(self, request):
-        return Response(self.get_queryset().filter(quantity__gt=0).values())
+        queryset = self.get_queryset().filter(quantity__gt=0)
+        result = self.get_serializer(queryset, many=True)
+        return Response(result.data)
 
     @action(detail=False, methods=["get"])
     def sold_out(self, request):
-        return Response(self.get_queryset().filter(quantity=0).values())
+        queryset = self.get_queryset().filter(quantity=0)
+        result = self.get_serializer(queryset, many=True)
+        return Response(result.data)
 
     @action(detail=True, methods=["patch"])
     def quantity(self, request, **kwargs):
