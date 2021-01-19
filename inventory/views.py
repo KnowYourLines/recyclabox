@@ -14,6 +14,7 @@ class InventoryViewSet(
 ):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    lookup_field = "sku"
 
     @action(detail=False, methods=["get"])
     def available(self, request):

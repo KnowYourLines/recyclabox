@@ -1,13 +1,12 @@
+import datetime
 from http import HTTPStatus
 
-from rest_framework.test import APISimpleTestCase
+from django.test import TransactionTestCase
 
 from inventory.models import Product
 
 
-class ProductIntegrationTest(APISimpleTestCase):
-    databases = {"default"}
-
+class ProductIntegrationTest(TransactionTestCase):
     def test_register_a_product(self):
         new_product = {
             "sku": "2346",
@@ -25,42 +24,71 @@ class ProductIntegrationTest(APISimpleTestCase):
         }
 
     def test_retrieve_product_by_sku(self):
-        created_product = Product(sku="hello", name="world", quantity=5, price=59.99)
+        salt = (
+            datetime.datetime.now()
+            .isoformat()
+            .replace(":", "")
+            .replace("-", "")
+            .replace(".", "")
+        )
+        created_product = Product(sku=salt, name="world", quantity=5, price=59.99)
         created_product.save()
-        response = self.client.get("/inventory/hello/")
+        response = self.client.get(f"/inventory/{salt}/")
         assert response.status_code == HTTPStatus.OK
         assert response.data == {
-            "sku": "hello",
+            "sku": salt,
             "name": "world",
             "quantity": 5,
             "price": 59.99,
         }
 
     def test_retrieves_all_available_products(self):
-        created_product = Product(sku="2346", name="world", quantity=5, price=59.99)
+        salt = (
+            datetime.datetime.now()
+            .isoformat()
+            .replace(":", "")
+            .replace("-", "")
+            .replace(".", "")
+        )
+        created_product = Product(sku=salt, name="world", quantity=5, price=59.99)
         created_product.save()
-        created_product = Product(sku="hello", name="world", quantity=5, price=59.99)
+        created_product = Product(
+            sku="hello" + salt, name="world", quantity=5, price=59.99
+        )
         created_product.save()
-        created_product = Product(sku="goodbye", name="world", quantity=0, price=59.99)
+        created_product = Product(
+            sku="goodbye" + salt, name="world", quantity=0, price=59.99
+        )
         created_product.save()
         response = self.client.get("/inventory/available/")
         assert response.status_code == HTTPStatus.OK
         assert response.data == [
-            {"name": "world", "quantity": 5, "price": 59.99, "sku": "2346"},
-            {"name": "world", "quantity": 5, "price": 59.99, "sku": "hello"},
+            {"name": "world", "quantity": 5, "price": 59.99, "sku": salt},
+            {"name": "world", "quantity": 5, "price": 59.99, "sku": "hello" + salt},
         ]
 
     def test_retrieves_all_sold_out_products(self):
-        created_product = Product(sku="2346", name="world", quantity=5, price=59.99)
+        salt = (
+            datetime.datetime.now()
+            .isoformat()
+            .replace(":", "")
+            .replace("-", "")
+            .replace(".", "")
+        )
+        created_product = Product(sku=salt, name="world", quantity=5, price=59.99)
         created_product.save()
-        created_product = Product(sku="hello", name="world", quantity=5, price=59.99)
+        created_product = Product(
+            sku="hello" + salt, name="world", quantity=5, price=59.99
+        )
         created_product.save()
-        created_product = Product(sku="goodbye", name="world", quantity=0, price=59.99)
+        created_product = Product(
+            sku="goodbye" + salt, name="world", quantity=0, price=59.99
+        )
         created_product.save()
         response = self.client.get("/inventory/sold_out/")
         assert response.status_code == HTTPStatus.OK
         assert response.data == [
-            {"name": "world", "quantity": 0, "price": 59.99, "sku": "goodbye"},
+            {"name": "world", "quantity": 0, "price": 59.99, "sku": "goodbye" + salt},
         ]
 
     def test_update_product_quantity_by_value_change(self):
